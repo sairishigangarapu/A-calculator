@@ -97,71 +97,88 @@ def result():
 
 
 root = tk.Tk()
-root.geometry("1200x1200")
+root.geometry("500x700")  # More compact size
 root.title("Calculator")
-frame1 = Frame(root)
-frame1.pack()
+root.configure(bg='#E8E8E8')  # Light gray background
+root.resizable(False, False)
 
-tb1 = tk.Entry(root, width='100', font=("Agency FB", 40, "bold"))
-tb1.pack(side=TOP, padx=85, pady=10)
-btn1 = Button(root, text="1", width=5, height=1, command=lambda: input_num('1'), font=("Agency FB", 25, "bold"))
-btn2 = Button(root, text="2", width=5, height=1, command=lambda: input_num('2'), font=("Agency FB", 25, "bold"))
-btn1.pack(anchor='nw', padx=100, pady=75)
-btn2.pack(anchor='nw', padx=100, pady=75)
-btn2.place(x=250, y=160)
-btn3 = Button(root, text="3", width=5, height=1, command=lambda: input_num('3'), font=("Agency FB", 25, "bold"))
-btn3.pack(anchor='nw', padx=100, pady=75)
-# btn3.bind('<Button-1>', input_3)
-btn3.place(x=400, y=160)
-btn4 = Button(root, text="4", width=5, height=1, command=lambda: input_num('4'), font=("Agency FB", 25, "bold"))
-btn4.pack(anchor='nw', padx=100, pady=75)
-# btn4.bind('<Button-1>', input_4)
-btn4.place(x=100, y=300)
-btn5 = Button(root, text="5", width=5, height=1, command=lambda: input_num('5'), font=("Agency FB", 25, "bold"))
-btn5.pack(anchor='nw', padx=100, pady=75)
-# btn5.bind('<Button-1>', input_5)
-btn5.place(x=250, y=300)
-btn6 = Button(root, text="6", width=5, height=1, command=lambda: input_num('6'), font=("Agency FB", 25, "bold"))
-btn6.pack(anchor='nw', padx=100, pady=75)
-# btn6.bind('<Button-1>', input_6)
-btn6.place(x=400, y=300)
-btn7 = Button(root, text="7", width=5, height=1, command=lambda: input_num('7'), font=("Agency FB", 25, "bold"))
-btn7.pack(anchor='nw', padx=100, pady=75)
-btn7.place(x=100, y=440)
-btn8 = Button(root, text="8", width=5, height=1, command=lambda: input_num('8'), font=("Agency FB", 25, "bold"))
-btn8.pack(anchor='nw', padx=100, pady=75)
-btn8.place(x=250, y=440)
-btn9 = Button(root, text="9", width=5, height=1, command=lambda: input_num('9'), font=("Agency FB", 25, "bold"))
-btn9.pack(anchor='nw', padx=100, pady=75)
-btn9.place(x=400, y=440)
-btn10 = Button(root, text="0", width=5, height=1, command=lambda: input_num('0'), font=("Agency FB", 25, "bold"))
-btn10.pack(anchor='nw', padx=100, pady=75)
-btn10.place(x=250, y=600)
-btn11 = Button(root, text="+", width=5, height=2, command=lambda: cal('+'), font=("Agency FB", "25", "bold"))
-btn11.pack(anchor='nw', padx=100, pady=75)
-btn11.place(x=750, y=160)
-btn12 = Button(root, text="-", width=5, height=2, command=lambda: cal('-'), font=("Agency FB", 25, "bold"))
-btn12.pack(anchor='nw', padx=100, pady=75)
-btn12.place(x=900, y=160)
-btn13 = Button(root, text="/", width=5, height=2, command=lambda: cal('/'), font=("Agency FB", 25, "bold"))
-btn13.pack(anchor='nw', padx=100, pady=75,)
-btn13.place(x=750, y=300)
-btn14 = Button(root, text="*", width=5, height=2, command=lambda: cal('*'), font=("Agency FB", 25, "bold"))
-btn14.pack(anchor='nw', padx=100, pady=75)
-btn14.place(x=900, y=300)
-btn15 = Button(root, text="x*x", width=5, height=2, command=square, font=("Agency FB", 25, "bold"))
-btn15.pack(anchor='nw', padx=100, pady=75)
-btn15.place(x=750, y=440)
-btn14 = Button(root, text="=", width=5, height=1, command=result, font=("Agency FB", 25, "bold"))
-btn14.pack(anchor='nw', padx=100, pady=75)
-btn14.place(x=100, y=700)
-btn15 = Button(root, text=".", width=5, height=2, command=lambda: input_decimal("."), font=("Agency FB", 25, "bold"))
-btn15.pack(anchor='nw', padx=100, pady=75)
-btn15.place(x=900, y=440)
-btn16 = Button(root, text="clear", width=5, height=1, command=reset, font=("Agency FB", 25, "bold"))
-btn16.pack(anchor='nw', padx=100, pady=75)
-btn16.place(x=400, y=700)
-btn16 = Button(root, text="pie", width=5, height=1, command=lambda: input_pie(3.14), font=("Agency FB", 25, "bold"))
-btn16.pack(anchor='nw', padx=100, pady=75)
-btn16.place(x=800, y=700)
+# Style constants
+BUTTON_FONT = ("Arial", 20, "bold")
+DISPLAY_FONT = ("Arial", 30)
+BUTTON_COLOR = "#FFFFFF"  # White
+OPERATOR_COLOR = "#FFB74D"  # Orange
+SPECIAL_COLOR = "#9575CD"  # Purple
+EQUAL_COLOR = "#4CAF50"  # Green
+
+# Calculator display
+tb1 = tk.Entry(root, 
+    width=20,
+    font=DISPLAY_FONT,
+    justify='right',
+    bd=10,
+    relief='sunken'
+)
+tb1.pack(padx=20, pady=20, fill='x')
+
+# Button frame
+button_frame = Frame(root, bg='#E8E8E8')
+button_frame.pack(padx=20, pady=10, expand=True)
+
+# Button layout
+buttons = [
+    ['7', '8', '9', '/'],
+    ['4', '5', '6', '*'],
+    ['1', '2', '3', '-'],
+    ['0', '.', 'π', '+'],
+    ['x²', 'C', '=']
+]
+
+# Create and place buttons
+for i, row in enumerate(buttons):
+    for j, btn_text in enumerate(row):
+        if btn_text in ['+', '-', '*', '/']:
+            bg_color = OPERATOR_COLOR
+        elif btn_text in ['x²', 'π']:
+            bg_color = SPECIAL_COLOR
+        elif btn_text == '=':
+            bg_color = EQUAL_COLOR
+        else:
+            bg_color = BUTTON_COLOR
+            
+        btn = Button(
+            button_frame,
+            text=btn_text,
+            width=4,
+            height=1,
+            font=BUTTON_FONT,
+            bd=5,
+            relief='raised',
+            bg=bg_color
+        )
+        
+        # Command binding
+        if btn_text.isdigit():
+            btn.configure(command=lambda x=btn_text: input_num(x))
+        elif btn_text == '.':
+            btn.configure(command=lambda: input_decimal('.'))
+        elif btn_text == 'π':
+            btn.configure(command=lambda: input_pie(3.14))
+        elif btn_text == 'x²':
+            btn.configure(command=square)
+        elif btn_text == 'C':
+            btn.configure(command=reset)
+        elif btn_text == '=':
+            btn.configure(command=result)
+        else:
+            btn.configure(command=lambda x=btn_text: cal(x))
+            
+        # Grid layout
+        btn.grid(row=i, column=j, padx=5, pady=5, sticky='nsew')
+
+# Configure grid weights
+for i in range(5):
+    button_frame.grid_rowconfigure(i, weight=1)
+for i in range(4):
+    button_frame.grid_columnconfigure(i, weight=1)
+
 root.mainloop()
